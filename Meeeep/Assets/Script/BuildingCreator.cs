@@ -158,18 +158,19 @@ public class BuildingCreator : Singleton<BuildingCreator> {
         }
     }
 
-    private bool IsForbidden(Vector3Int pos) {
+    private bool IsForbidden(Vector3Int pos) { //line 161-170 tile restriction 
+    List<BuildingCategory> restrictedCategories = selectedObj.PlacementRestrictions;
+    List<Tilemap> restrictedMaps = restrictedCategories.ConvertAll(category => category.Tilemap);
 
-        List<BuildingCategory> restrictedCategories = selectedObj.PlacementRestrictions;
-        List<Tilemap>restrictedMaps = restrictedCategories.ConvertAll(category => category.Tilemap);
+    List<Tilemap> allMaps = forbidPlacingWithMaps.Concat(restrictedMaps).ToList();
 
-        List<Tilemap> allMaps = forbidPlacingWithMaps.Concat(restrictedMaps).ToList();
-        return allMaps.Any(map => {
-            return map.HasTile(pos);
-        });
-    }
+    return allMaps.Any(map => {
+        return map.HasTile(pos);
+    });
+}
 
-    private void HandleDrawing () {
+
+    private void HandleDrawing () { //line 173-188 forda drawing ng mga tile function
         if (selectedObj != null) {
             switch (selectedObj.PlaceType) {
 
@@ -187,7 +188,7 @@ public class BuildingCreator : Singleton<BuildingCreator> {
         }
     }
 
-    private void HandleDrawRelease(){
+    private void HandleDrawRelease(){ //line 191-202 forda pag binitawan mo ang pagkakaclick sa draw function
         if (selectedObj != null) {
             switch (selectedObj.PlaceType) {
                 case PlaceType.Line:
@@ -202,7 +203,8 @@ public class BuildingCreator : Singleton<BuildingCreator> {
 
     }
 
-    private void RectangleRenderer() {
+    private void RectangleRenderer() { //line 206-216 rectangle function, where can draw large rectangle to cover the tilemap
+                                    // must change to rectangle ang place type sa inspector to activate this 
         //render preview on UI map
         previewMap.ClearAllTiles ();
 
@@ -214,7 +216,8 @@ public class BuildingCreator : Singleton<BuildingCreator> {
         DrawBounds (previewMap);
     }
 
-    private void LineRenderer(){
+    private void LineRenderer(){ //line 219-240 line function, this function focuses on rendering lines (horizontal or vertical lines only)
+                                // must change to Line ang place type sa inspector to activate 
         previewMap.ClearAllTiles();
         float diffX = Mathf.Abs (currentGridPosition.x - holdStartPosition.x);
         float diffY = Mathf.Abs (currentGridPosition.y - holdStartPosition.y);
@@ -245,7 +248,7 @@ public class BuildingCreator : Singleton<BuildingCreator> {
         }
     }
 
-    private void DrawItem(Tilemap map, Vector3Int position, TileBase tileBase) {
+    private void DrawItem(Tilemap map, Vector3Int position, TileBase tileBase) { //line 249-260 drawing function with restriction
        if (selectedObj.GetType() == typeof(BuildingTool)){
             //it is a tool
 
@@ -253,7 +256,7 @@ public class BuildingCreator : Singleton<BuildingCreator> {
 
             tool.Use(position);
 
-       } else if (!IsForbidden(position)){
+       } else if (!IsForbidden(position)){ //restriction part
         map.SetTile (position, tileBase);
        }
     }

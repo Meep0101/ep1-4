@@ -285,6 +285,7 @@ MonoBehaviour:
   categoriesToCreateTilemapFor:
   - {fileID: 11400000, guid: e7da17114e8d49246a19f53074ee6d5f, type: 2}
   - {fileID: 11400000, guid: 32ab8c0e2b5ade647952fc7eba36a582, type: 2}
+  - {fileID: 11400000, guid: 53f6b4dddd9839645aadf65abce692ca, type: 2}
   grid: {fileID: 1337090368}
 --- !u!114 &233745658
 MonoBehaviour:
