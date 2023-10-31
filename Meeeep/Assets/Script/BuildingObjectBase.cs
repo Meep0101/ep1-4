@@ -1,44 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
-public enum Category {
-    Wall,
-    Floor
-}
-
-
-
-[CreateAssetMenu (fileName = "Buildable", menuName = "BuildingObjects/Create Buildable")]
-public class BuildingObjectBase : ScriptableObject {
+[CreateAssetMenu(fileName = "Buildable", menuName = "LevelBuilding/Create Buildable")]
+public class BuildingObjectBase : ScriptableObject
+{
     [SerializeField] BuildingCategory category;
     [SerializeField] UICategory uiCategory;
     [SerializeField] TileBase tileBase;
     [SerializeField] PlaceType placeType;
+    [SerializeField] bool usePlacementRestrictions;
+    [SerializeField] List<BuildingCategory> placementRestrictions;
 
-    public TileBase TileBase {
-        get {
+    public List<BuildingCategory> PlacementRestrictions
+    {
+        get
+        {
+            return usePlacementRestrictions ? placementRestrictions : category.PlacementRestrictions;
+        }
+    }
+
+    public TileBase TileBase
+    {
+        get
+        {
             return tileBase;
         }
     }
 
-    public PlaceType PlaceType{
-        get {
+    public PlaceType PlaceType
+    {
+        get
+        {
             return placeType == PlaceType.None ? category.PlaceType : placeType;
         }
     }
 
-    public BuildingCategory Category {
-        get {
+    public BuildingCategory Category
+    {
+        get
+        {
             return category;
         }
     }
 
-    public UICategory UICategory{
-        get {
-            return UICategory;
+    public UICategory UICategory
+    {
+        get
+        {
+            return uiCategory;
         }
     }
-
 }

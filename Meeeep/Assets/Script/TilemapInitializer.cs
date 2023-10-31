@@ -9,8 +9,12 @@ public class TilemapInitializer : Singleton<TilemapInitializer>
     [SerializeField] Transform grid;
 
     private void Start(){
+        CreateMaps(); 
+    }
+
+    private void CreateMaps(){
         foreach (BuildingCategory category in categoriesToCreateTilemapFor){
-            GameObject obj = new GameObject(category.name);
+            GameObject obj = new GameObject("Tilemap_" + category.name);
 
             Tilemap map = obj.AddComponent<Tilemap>();
             TilemapRenderer tr = obj.AddComponent<TilemapRenderer>();

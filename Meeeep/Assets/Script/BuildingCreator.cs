@@ -3,10 +3,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
+using System.Linq;
 
 public class BuildingCreator : Singleton<BuildingCreator> {
     [SerializeField] Tilemap previewMap,
     defaultMap;
+
+    //if one of those maps contains a tile at the position, place is not allowed
+    [SerializeField] List<Tilemap> forbidPlacingWithMaps;
+    
     PlayerInput playerInput;
 
     TileBase tileBase;
@@ -143,8 +149,24 @@ public class BuildingCreator : Singleton<BuildingCreator> {
     private void UpdatePreview () {
         // Remove old tile if existing
         previewMap.SetTile (lastGridPosition, null);
+
+        if (!IsForbidden(currentGridPosition)){
+            
+        
         // Set current tile to current mouse positions tile
         previewMap.SetTile (currentGridPosition, tileBase);
+        }
+    }
+
+    private bool IsForbidden(Vector3Int pos) {
+
+        List<BuildingCategory> restrictedCategories = selectedObj.PlacementRestrictions;
+        List<Tilemap>restrictedMaps = restrictedCategories.ConvertAll(category => category.Tilemap);
+
+        List<Tilemap> allMaps = forbidPlacingWithMaps.Concat(restrictedMaps).ToList();
+        return allMaps.Any(map => {
+            return map.HasTile(pos);
+        });
     }
 
     private void HandleDrawing () {
@@ -153,7 +175,7 @@ public class BuildingCreator : Singleton<BuildingCreator> {
 
                 case PlaceType.Single:
                 default:
-                    DrawItem();
+                    DrawItem(tilemap, currentGridPosition, tileBase);
                     break;
                 case PlaceType.Line:
                 LineRenderer();
@@ -218,14 +240,22 @@ public class BuildingCreator : Singleton<BuildingCreator> {
     private void DrawBounds (Tilemap map){
         for (int x = bounds.xMin; x <= bounds.xMax; x++ ) {
             for (int y = bounds.yMin; y <= bounds.yMax; y++){
-                map.SetTile (new Vector3Int (x, y, 0), tileBase);
+                DrawItem (map, new Vector3Int (x, y, 0), tileBase);
             }
         }
     }
 
-    private void DrawItem () {
-        // TODO: automatically select tilemap
-        tilemap.SetTile (currentGridPosition, tileBase);
+    private void DrawItem(Tilemap map, Vector3Int position, TileBase tileBase) {
+       if (selectedObj.GetType() == typeof(BuildingTool)){
+            //it is a tool
+
+            BuildingTool tool = (BuildingTool)selectedObj;
+
+            tool.Use(position);
+
+       } else if (!IsForbidden(position)){
+        map.SetTile (position, tileBase);
+       }
     }
 
 }

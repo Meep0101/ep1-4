@@ -13,6 +13,12 @@ public class BuildingButtonHandler : MonoBehaviour {
         buildingCreator = BuildingCreator.GetInstance ();
     }
 
+    public BuildingObjectBase Item {
+        set {
+            item = value;
+        }
+    }
+
     private void ButtonClicked () {
         Debug.Log ("Button was clicked: " + item.name);
         buildingCreator.ObjectSelected (item);
