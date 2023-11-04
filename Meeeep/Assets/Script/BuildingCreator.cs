@@ -12,7 +12,9 @@ public class BuildingCreator : Singleton<BuildingCreator> {
 
     //if one of those maps contains a tile at the position, place is not allowed
     [SerializeField] List<Tilemap> forbidPlacingWithMaps;
-    
+    //[SerializeField] List<Tilemap> fordbidPlaceStation;
+
+
     PlayerInput playerInput;
 
     TileBase tileBase;
